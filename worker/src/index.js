@@ -96,7 +96,7 @@ async function showMenu(env, chat) {
 async function showAfisha(env, chat, data) {
   const rows = data.events.map((ev) => {
     const { total } = eventTotal(ev, data);
-    return [{ text: `${ev.main ? "⭐ " : ""}${ev.emoji} ${ev.title.replace(/^Спектакль в |^Концерт в |^Представление в /, "")} · ${total ? rub(total) : "бесплатно"}`, callback_data: "ev:" + ev.id }];
+    return [{ text: `${ev.main ? "⭐ " : ""}${ev.emoji} ${ev.short || ev.title} · ${total ? rub(total) : "бесплатно"}`, callback_data: "ev:" + ev.id }];
   });
   rows.push(BACK);
   await send(env, chat, `🎭 <b>Афиша Курского края</b>\nСумма = билет + дорога (ориентировочно, обновлено ${data.updated}).\nВыбери событие:`, rows);
