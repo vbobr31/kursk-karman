@@ -130,10 +130,10 @@
     { "q": "Ты хочешь в театр за 400 ₽, есть 100 ₽, откладываешь 100 ₽ в неделю. Через сколько недель накопишь?", "a": ["2 недели", "3 недели", "4 недели"], "ok": 1, "why": "Не хватает 300 ₽: 300 ÷ 100 = 3 недели." }
   ],
   "videos": [
-    { "title": "Курский драмтеатр им. Пушкина", "url": "https://rutube.ru/search/?query=%D0%9A%D1%83%D1%80%D1%81%D0%BA%D0%B8%D0%B9%20%D0%B4%D1%80%D0%B0%D0%BC%D1%82%D0%B5%D0%B0%D1%82%D1%80%20%D0%9F%D1%83%D1%88%D0%BA%D0%B8%D0%BD%D0%B0" },
-    { "title": "Картинная галерея им. Дейнеки", "url": "https://rutube.ru/search/?query=%D0%9A%D1%83%D1%80%D1%81%D0%BA%D0%B0%D1%8F%20%D0%BA%D0%B0%D1%80%D1%82%D0%B8%D0%BD%D0%BD%D0%B0%D1%8F%20%D0%B3%D0%B0%D0%BB%D0%B5%D1%80%D0%B5%D1%8F%20%D0%94%D0%B5%D0%B9%D0%BD%D0%B5%D0%BA%D0%B8" },
-    { "title": "Усадьба Фета «Воробьёвка»", "url": "https://rutube.ru/search/?query=%D1%83%D1%81%D0%B0%D0%B4%D1%8C%D0%B1%D0%B0%20%D0%A4%D0%B5%D1%82%D0%B0%20%D0%92%D0%BE%D1%80%D0%BE%D0%B1%D1%8C%D1%91%D0%B2%D0%BA%D0%B0" },
-    { "title": "Мемориал «Курская дуга»", "url": "https://rutube.ru/search/?query=%D0%BC%D0%B5%D0%BC%D0%BE%D1%80%D0%B8%D0%B0%D0%BB%20%D0%9A%D1%83%D1%80%D1%81%D0%BA%D0%B0%D1%8F%20%D0%B4%D1%83%D0%B3%D0%B0" },
-    { "title": "Как копить карманные деньги (финграмотность)", "url": "https://rutube.ru/search/?query=%D1%84%D0%B8%D0%BD%D0%B0%D0%BD%D1%81%D0%BE%D0%B2%D0%B0%D1%8F%20%D0%B3%D1%80%D0%B0%D0%BC%D0%BE%D1%82%D0%BD%D0%BE%D1%81%D1%82%D1%8C%20%D0%B4%D0%BB%D1%8F%20%D1%88%D0%BA%D0%BE%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA%D0%BE%D0%B2%20%D0%BA%D0%B0%D1%80%D0%BC%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5" }
+    { "title": "Курский драмтеатр ставит «Ревизора» (КП, 1 мин)", "url": "https://rutube.ru/video/073155e7a7d1c68963dd5b104bc39667/" },
+    { "title": "Галерея Дейнеки: настольная игра для школьников («Сейм», 3 мин)", "url": "https://rutube.ru/video/6874859641a1b17b640ff7e86b738563/" },
+    { "title": "Усадьба Фета в Воробьёвке — аэросъёмка (9 мин)", "url": "https://rutube.ru/video/1fd7a054736fed5ae1548ee0af80afe6/" },
+    { "title": "Мемориал «Курская дуга»: видеоэкскурсия (библиотека им. Авдеевой, 2 мин)", "url": "https://rutube.ru/video/f5c9fc8da93c16e8565dbecc258a5b54/" },
+    { "title": "Понятная экономика: деньги (Банк России, 5 мин)", "url": "https://rutube.ru/video/ede0e7b5b2e6969fcf7ffd70130fd650/" }
   ]
 }
