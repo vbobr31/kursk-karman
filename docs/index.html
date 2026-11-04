@@ -38,6 +38,7 @@ nav.tabs button.on{background:var(--navy);border-color:var(--navy);color:#fff}
 section{display:none}
 section.on{display:block}
 h2{font-size:20px;margin:6px 0 12px}
+.card.main{border:2px solid var(--gold)}
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px;margin-bottom:12px;box-shadow:var(--shadow)}
 .ev{display:flex;gap:12px;align-items:flex-start}
 .ev .em{font-size:30px;line-height:1}
@@ -88,7 +89,7 @@ footer{color:var(--muted);font-size:12px;text-align:center;margin-top:24px}
     <img src="img/avatar.png" alt="">
     <div>
       <h1>Умный карман<br><span>курского школьника</span></h1>
-      <p>Копим на театр, музей и концерт Курского края — без лишних трат</p>
+      <p>Копим на спектакль в Курском драмтеатре им. А.С. Пушкина ⭐ и другие места Курского края — без лишних трат</p>
       <a class="tgbtn" id="tgLink" href="https://t.me/kurskie_meropriyatiya_bot" target="_blank" rel="noopener">✈️ Открыть бота в Telegram</a>
     </div>
   </div>
@@ -109,7 +110,7 @@ footer{color:var(--muted);font-size:12px;text-align:center;margin-top:24px}
   <section id="chat" class="on">
     <div class="chat" id="chatBox"></div>
     <div class="chips" id="chips">
-      <button data-q="Как накопить на концерт, если мне дают 300 ₽ в неделю?">💰 Как накопить?</button>
+      <button data-q="Как накопить на спектакль в Курском драмтеатре, если мне дают 300 ₽ в неделю?">🎭 Накопить на драмтеатр</button>
       <button data-q="Что такое Пушкинская карта и как её получить?">🎟 Пушкинская карта</button>
       <button data-q="Куда сходить в Курске школьнику бесплатно или недорого?">🏛 Куда сходить?</button>
       <button data-q="Объясни правило 50/30/20 простыми словами">📊 Правило 50/30/20</button>
@@ -242,8 +243,8 @@ function num(v, min, max) {
 function renderAfisha() {
   $("evList").innerHTML = DATA.events.map((ev) => {
     const t = totalOf(ev);
-    return `<div class="card ev"><div class="em">${ev.emoji}</div><div>
-      <h3>${esc(ev.title)}</h3>
+    return `<div class="card ev${ev.main ? " main" : ""}"><div class="em">${ev.emoji}</div><div>
+      ${ev.main ? '<span class="pill">⭐ Наш объект культуры</span>' : ""}<h3>${esc(ev.title)}</h3>
       <div class="meta">📍 ${esc(ev.place)}</div>
       <div class="meta">${esc(ev.about)}</div>
       <div class="sum">≈ ${t ? rub(t) : "бесплатно"} <span class="meta">(билет ${ev.price ? rub(ev.price) : "0 ₽"} + дорога ${rub(t - (ev.price || 0))})</span></div>
@@ -377,7 +378,7 @@ $("chatForm").addEventListener("submit", (e) => { e.preventDefault(); const v = 
 $("chips").addEventListener("click", (e) => { const b = e.target.closest("[data-q]"); if (b) ask(b.dataset.q); });
 
 function greet() {
-  addMsg("bot", "👋 Привет! Я — Умный карман курского школьника.\n\nПомогу накопить на театр, музей или концерт Курского края: посчитаю план, буду вести копилку и подскажу, как не тратить лишнего.\n\nСпроси меня о чём-нибудь или выбери вкладку сверху 👆");
+  addMsg("bot", "👋 Привет! Я — Умный карман курского школьника.\n\nНаш объект культуры — Курский драмтеатр им. А.С. Пушкина ⭐ (с 1792 года). Помогу накопить на спектакль в нём, а ещё на музей или концерт Курского края: посчитаю план, буду вести копилку и подскажу, как не тратить лишнего.\n\nСпроси меня о чём-нибудь или выбери вкладку сверху 👆");
   chatHist.forEach((m) => addMsg(m.role, (m.role === "assistant" ? "🤖 " : "") + m.content));
 }
 
