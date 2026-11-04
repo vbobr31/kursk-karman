@@ -1,0 +1,10 @@
+name: Воскресные напоминания
+on:
+  schedule:
+    - cron: "0 9 * * 0"   # воскресенье 12:00 МСК
+  workflow_dispatch:
+jobs:
+  remind:
+    runs-on: ubuntu-latest
+    steps:
+      - run: curl -fsS -X POST -H "x-cron-secret: ${{ secrets.REMIND_SECRET }}" https://kursk-karman-bot.techno2013blog-46.workers.dev/cron

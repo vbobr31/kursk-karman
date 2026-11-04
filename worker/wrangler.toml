@@ -1,0 +1,21 @@
+name = "kursk-karman-bot"
+main = "src/index.js"
+compatibility_date = "2025-09-01"
+
+# Нейросеть Cloudflare Workers AI (ключ не нужен)
+[ai]
+binding = "AI"
+
+# Копилки, цели и настройки пользователей
+[[kv_namespaces]]
+binding = "KV"
+id = "3007cdd48ff94012a67db4ed263bc45c"
+
+# Напоминания запускает GitHub Actions (.github/workflows/remind.yml) —
+# лимит бесплатных cron в аккаунте Cloudflare исчерпан.
+[triggers]
+crons = []
+
+# Секреты (не хранятся в репозитории):
+#   npx wrangler secret put BOT_TOKEN
+#   npx wrangler secret put WEBHOOK_SECRET

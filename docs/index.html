@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Умный карман курского школьника</title>
+<meta name="description" content="Чат-бот и копилка: помогаем школьникам Курской области накопить на театр, музей и концерт.">
+<meta property="og:title" content="Умный карман курского школьника">
+<meta property="og:description" content="Копим на культурное событие Курского края без лишних трат">
+<meta property="og:image" content="https://vbobr31.github.io/kursk-karman/img/banner.png">
+<link rel="icon" href="img/icon-192.png">
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+:root{
+  --bg:#f3f5fb; --card:#ffffff; --text:#14213d; --muted:#5b6785; --line:#e1e6f2;
+  --navy:#12285c; --blue:#245cb4; --gold:#f5b62e; --gold-d:#c48014; --red:#c82e34; --green:#1f9d55;
+  --radius:18px; --shadow:0 6px 24px rgba(18,40,92,.08);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){ --bg:#0d1630; --card:#16224a; --text:#eef2ff; --muted:#a8b3d6; --line:#26346a; --shadow:none; }
+}
+:root[data-theme="dark"]{ --bg:#0d1630; --card:#16224a; --text:#eef2ff; --muted:#a8b3d6; --line:#26346a; --shadow:none; }
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text);font:16px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+a{color:var(--blue)}
+.wrap{max-width:760px;margin:0 auto;padding:0 16px 96px}
+header.hero{background:linear-gradient(135deg,var(--blue),var(--navy));color:#fff;padding:22px 16px 26px}
+.hero .in{max-width:760px;margin:0 auto;display:flex;gap:16px;align-items:center}
+.hero img{width:72px;height:72px;border-radius:50%;flex:none;box-shadow:0 4px 14px rgba(0,0,0,.25)}
+.hero h1{margin:0;font-size:22px;line-height:1.15}
+.hero h1 span{color:var(--gold)}
+.hero p{margin:6px 0 0;color:#d9e2f7;font-size:14px}
+.tgbtn{display:inline-flex;gap:6px;align-items:center;margin-top:10px;background:var(--gold);color:var(--navy);font-weight:700;text-decoration:none;padding:8px 14px;border-radius:999px;font-size:14px}
+nav.tabs{position:sticky;top:0;z-index:5;background:var(--bg);display:flex;gap:6px;overflow-x:auto;padding:12px 16px;scrollbar-width:none;max-width:760px;margin:0 auto}
+nav.tabs::-webkit-scrollbar{display:none}
+nav.tabs button{flex:none;border:1px solid var(--line);background:var(--card);color:var(--text);padding:8px 14px;border-radius:999px;font-size:14px;cursor:pointer}
+nav.tabs button.on{background:var(--navy);border-color:var(--navy);color:#fff}
+section{display:none}
+section.on{display:block}
+h2{font-size:20px;margin:6px 0 12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px;margin-bottom:12px;box-shadow:var(--shadow)}
+.ev{display:flex;gap:12px;align-items:flex-start}
+.ev .em{font-size:30px;line-height:1}
+.ev h3{margin:0 0 4px;font-size:16px}
+.ev .meta{color:var(--muted);font-size:13px}
+.ev .sum{font-weight:800;color:var(--navy);margin-top:6px}
+:root[data-theme="dark"] .ev .sum{color:var(--gold)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .ev .sum{color:var(--gold)}}
+.pill{display:inline-block;font-size:12px;padding:2px 8px;border-radius:999px;background:rgba(245,182,46,.18);color:var(--gold-d);margin-top:6px}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.btn{border:0;background:var(--navy);color:#fff;padding:10px 14px;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer}
+.btn.gold{background:var(--gold);color:var(--navy)}
+.btn.ghost{background:transparent;color:var(--text);border:1px solid var(--line)}
+.btn.red{background:var(--red)}
+label{display:block;font-size:14px;color:var(--muted);margin:10px 0 4px}
+input,select{width:100%;padding:11px 12px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--text);font-size:16px}
+.err{color:var(--red);font-size:14px;min-height:18px;margin-top:6px}
+.result{margin-top:12px;padding:14px;border-radius:14px;background:rgba(36,92,180,.08)}
+.result.ok{background:rgba(31,157,85,.12)}
+.result.warn{background:rgba(200,46,52,.10)}
+.big{font-size:30px;font-weight:800}
+.progress{height:16px;background:var(--line);border-radius:999px;overflow:hidden;margin:10px 0 4px}
+.progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--gold),var(--gold-d));transition:width .5s}
+.hist{list-style:none;padding:0;margin:8px 0 0;font-size:14px}
+.hist li{display:flex;justify-content:space-between;border-top:1px solid var(--line);padding:6px 0}
+.plus{color:var(--green);font-weight:700}.minus{color:var(--red);font-weight:700}
+.tip{font-size:17px}
+.qa button{display:block;width:100%;text-align:left;margin-top:8px}
+.qa button.right{background:var(--green)}
+.qa button.wrong{background:var(--red)}
+.chat{display:flex;flex-direction:column;gap:8px;min-height:240px}
+.msg{max-width:85%;padding:10px 12px;border-radius:16px;white-space:pre-wrap;font-size:15px}
+.msg.bot{background:var(--card);border:1px solid var(--line);align-self:flex-start;border-bottom-left-radius:4px}
+.msg.me{background:var(--navy);color:#fff;align-self:flex-end;border-bottom-right-radius:4px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
+.chips button{border:1px solid var(--line);background:var(--card);color:var(--text);padding:6px 10px;border-radius:999px;font-size:13px;cursor:pointer}
+.composer{position:fixed;left:0;right:0;bottom:0;background:var(--bg);border-top:1px solid var(--line);padding:10px 16px calc(10px + env(safe-area-inset-bottom))}
+.composer .in{max-width:760px;margin:0 auto;display:flex;gap:8px}
+.composer input{flex:1}
+.hidden{display:none!important}
+small.note{display:block;color:var(--muted);font-size:12px;margin-top:8px}
+footer{color:var(--muted);font-size:12px;text-align:center;margin-top:24px}
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="in">
+    <img src="img/avatar.png" alt="">
+    <div>
+      <h1>Умный карман<br><span>курского школьника</span></h1>
+      <p>Копим на театр, музей и концерт Курского края — без лишних трат</p>
+      <a class="tgbtn" id="tgLink" href="https://t.me/kurskie_meropriyatiya_bot" target="_blank" rel="noopener">✈️ Открыть бота в Telegram</a>
+    </div>
+  </div>
+</header>
+
+<nav class="tabs" id="tabs">
+  <button data-t="chat" class="on">🤖 Чат-бот</button>
+  <button data-t="afisha">🎭 Афиша</button>
+  <button data-t="goal">🎯 Цель</button>
+  <button data-t="piggy">🐷 Копилка</button>
+  <button data-t="tips">💡 Советы</button>
+  <button data-t="quiz">🧠 Викторина</button>
+  <button data-t="benefits">🎟 Льготы</button>
+</nav>
+
+<main class="wrap">
+  <!-- ЧАТ -->
+  <section id="chat" class="on">
+    <div class="chat" id="chatBox"></div>
+    <div class="chips" id="chips">
+      <button data-q="Как накопить на концерт, если мне дают 300 ₽ в неделю?">💰 Как накопить?</button>
+      <button data-q="Что такое Пушкинская карта и как её получить?">🎟 Пушкинская карта</button>
+      <button data-q="Куда сходить в Курске школьнику бесплатно или недорого?">🏛 Куда сходить?</button>
+      <button data-q="Объясни правило 50/30/20 простыми словами">📊 Правило 50/30/20</button>
+    </div>
+  </section>
+
+  <!-- АФИША -->
+  <section id="afisha">
+    <h2>🎭 Афиша Курского края</h2>
+    <div id="evList"></div>
+    <small class="note" id="evNote"></small>
+  </section>
+
+  <!-- ЦЕЛЬ -->
+  <section id="goal">
+    <h2>🎯 Калькулятор цели</h2>
+    <div class="card">
+      <label for="gEv">Событие</label>
+      <select id="gEv"></select>
+      <label for="gHave">Сколько уже есть, ₽</label>
+      <input id="gHave" inputmode="numeric" placeholder="например, 100">
+      <label for="gInc">Сколько можешь откладывать в неделю, ₽</label>
+      <input id="gInc" inputmode="numeric" placeholder="например, 150">
+      <label for="gWeeks">Через сколько недель событие (1–52)</label>
+      <input id="gWeeks" inputmode="numeric" placeholder="например, 3">
+      <div class="err" id="gErr"></div>
+      <div class="row"><button class="btn gold" id="gCalc">Посчитать план</button></div>
+      <div id="gRes"></div>
+    </div>
+  </section>
+
+  <!-- КОПИЛКА -->
+  <section id="piggy">
+    <h2>🐷 Копилка</h2>
+    <div class="card">
+      <div class="meta" id="pGoal">Цель не выбрана — задай её во вкладке «Цель».</div>
+      <div class="big" id="pBal">0 ₽</div>
+      <div class="progress"><i id="pBar"></i></div>
+      <div class="meta" id="pLeft"></div>
+      <label for="pSum">Сумма, ₽</label>
+      <input id="pSum" inputmode="numeric" placeholder="например, 100">
+      <label for="pNote">Комментарий (необязательно)</label>
+      <input id="pNote" placeholder="карманные, мороженое…" maxlength="40">
+      <div class="err" id="pErr"></div>
+      <div class="row">
+        <button class="btn" id="pAdd">+ Отложить</button>
+        <button class="btn red" id="pSub">− Потратить</button>
+        <button class="btn ghost" id="pReset">Сбросить</button>
+      </div>
+      <ul class="hist" id="pHist"></ul>
+    </div>
+  </section>
+
+  <!-- СОВЕТЫ -->
+  <section id="tips">
+    <h2>💡 Советы по финансовой грамотности</h2>
+    <div class="card"><div class="tip" id="tipText"></div><small class="note" id="tipNum"></small>
+      <div class="row"><button class="btn ghost" id="tipPrev">◀︎</button><button class="btn" id="tipNext">Следующий совет ▶︎</button></div>
+    </div>
+  </section>
+
+  <!-- ВИКТОРИНА -->
+  <section id="quiz">
+    <h2>🧠 Викторина о Курском крае</h2>
+    <div class="card qa" id="quizBox"></div>
+  </section>
+
+  <!-- ЛЬГОТЫ -->
+  <section id="benefits">
+    <h2>🎟 Льготы и экономия</h2>
+    <div class="card" id="benText"></div>
+    <h2>🎬 Видео</h2>
+    <div class="card" id="vidList"></div>
+  </section>
+
+  <footer>Цены ориентировочные — уточняйте в кассах учреждений.<br>Проект для турнира «CG/3D/VR/AR/AI», тур IV.</footer>
+</main>
+
+<div class="composer" id="composer">
+  <form class="in" id="chatForm">
+    <input id="chatIn" placeholder="Спроси про деньги или культуру Курска…" autocomplete="off" maxlength="500">
+    <button class="btn gold" type="submit">➤</button>
+  </form>
+</div>
+
+<script>
+const API = "https://kursk-karman-bot.techno2013blog-46.workers.dev/api/chat";
+const $ = (id) => document.getElementById(id);
+const rub = (n) => Math.round(n).toLocaleString("ru-RU") + " ₽";
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+// ---- Telegram Mini App ----
+const tgApp = window.Telegram && window.Telegram.WebApp;
+if (tgApp && tgApp.initData) {
+  tgApp.ready(); tgApp.expand();
+  document.documentElement.dataset.theme = tgApp.colorScheme === "dark" ? "dark" : "light";
+  $("tgLink").classList.add("hidden");
+}
+
+// ---- хранилище ----
+const store = {
+  get(k, d) { try { const v = localStorage.getItem("karman:" + k); return v ? JSON.parse(v) : d; } catch { return d; } },
+  set(k, v) { try { localStorage.setItem("karman:" + k, JSON.stringify(v)); } catch {} },
+};
+let S = store.get("state", { balance: 0, goal: null, plan: null, hist: [], coins: 0, quizDone: [] });
+const saveS = () => store.set("state", S);
+
+let DATA = null;
+const totalOf = (ev) => (ev.price || 0) + (ev.rides || 0) * (DATA.travelPerRide || 40) + (ev.extra || 0);
+
+// ---- вкладки ----
+function showTab(t) {
+  document.querySelectorAll("#tabs button").forEach((b) => b.classList.toggle("on", b.dataset.t === t));
+  document.querySelectorAll("main section").forEach((s) => s.classList.toggle("on", s.id === t));
+  $("composer").classList.toggle("hidden", t !== "chat");
+  if (t === "piggy") renderPiggy();
+  if (t === "quiz") renderQuiz();
+  window.scrollTo({ top: 0 });
+}
+$("tabs").addEventListener("click", (e) => { const b = e.target.closest("button"); if (b) showTab(b.dataset.t); });
+
+// ---- проверка чисел ----
+function num(v, min, max) {
+  const t = String(v).replace(/\s|₽/g, "");
+  if (!/^\d+$/.test(t)) return null;
+  const n = +t; return n >= min && n <= max ? n : null;
+}
+
+// ---- афиша ----
+function renderAfisha() {
+  $("evList").innerHTML = DATA.events.map((ev) => {
+    const t = totalOf(ev);
+    return `<div class="card ev"><div class="em">${ev.emoji}</div><div>
+      <h3>${esc(ev.title)}</h3>
+      <div class="meta">📍 ${esc(ev.place)}</div>
+      <div class="meta">${esc(ev.about)}</div>
+      <div class="sum">≈ ${t ? rub(t) : "бесплатно"} <span class="meta">(билет ${ev.price ? rub(ev.price) : "0 ₽"} + дорога ${rub(t - (ev.price || 0))})</span></div>
+      ${ev.pushkin ? '<span class="pill">🎟 Пушкинская карта</span>' : ""}
+      <div class="row"><button class="btn gold" data-goal="${ev.id}">🎯 Копить на это</button>
+      <a class="btn ghost" style="text-decoration:none" target="_blank" rel="noopener" href="https://yandex.ru/search/?text=${encodeURIComponent(ev.search)}">🔎 Расписание</a></div>
+    </div></div>`;
+  }).join("");
+  $("evNote").textContent = "Обновлено " + DATA.updated + ". " + DATA.note;
+  $("gEv").innerHTML = DATA.events.map((ev) => `<option value="${ev.id}">${ev.emoji} ${esc(ev.title)} — ${rub(totalOf(ev))}</option>`).join("");
+  if (S.goal) $("gEv").value = S.goal.id;
+}
+$("evList").addEventListener("click", (e) => {
+  const b = e.target.closest("[data-goal]"); if (!b) return;
+  $("gEv").value = b.dataset.goal; showTab("goal"); $("gHave").focus();
+});
+
+// ---- калькулятор цели ----
+$("gCalc").addEventListener("click", () => {
+  const ev = DATA.events.find((x) => x.id === $("gEv").value);
+  const have = num($("gHave").value, 0, 1e6), inc = num($("gInc").value, 0, 1e6), weeks = num($("gWeeks").value, 1, 52);
+  $("gErr").textContent = have === null ? "Укажи, сколько уже есть, целым числом (можно 0)."
+    : inc === null ? "Укажи сумму в неделю целым числом." : weeks === null ? "Число недель — от 1 до 52." : "";
+  if ($("gErr").textContent) { $("gRes").innerHTML = ""; return; }
+  const total = totalOf(ev), need = total - have;
+  S.goal = { id: ev.id, title: ev.title, total }; S.balance = have;
+  let html;
+  if (need <= 0) { S.plan = null; html = `<div class="result ok">🎉 У тебя уже есть ${rub(have)} — хватает на «${esc(ev.title)}»!</div>`; }
+  else {
+    const perWeek = Math.ceil(need / weeks), perDay = Math.ceil(perWeek / 7);
+    S.plan = { perWeek, perDay, weeks, income: inc };
+    if (perWeek <= inc) html = `<div class="result ok">✅ <b>Успеваешь!</b><br>Не хватает ${rub(need)}. Откладывай <b>${rub(perWeek)} в неделю</b> (≈${rub(perDay)} в день) — через ${weeks} нед. цель твоя.${inc > perWeek ? `<br>Остаток ${rub(inc - perWeek)} в неделю — на себя 😉` : ""}</div>`;
+    else {
+      const real = inc > 0 ? Math.ceil(need / inc) : null;
+      html = `<div class="result warn">⚠️ Нужно ${rub(perWeek)} в неделю, а ты можешь ${rub(inc)}.${real ? `<br>При твоём темпе накопишь за <b>${real} нед.</b>` : ""}<br><br><b>Варианты:</b> событие подешевле или бесплатное · перенести поход · сократить траты · Пушкинская карта (14+).</div>`;
+    }
+  }
+  saveS();
+  $("gRes").innerHTML = html + `<div class="row"><button class="btn" onclick="showTab('piggy')">🐷 Перейти в копилку</button></div>`;
+});
+
+// ---- копилка ----
+function renderPiggy() {
+  $("pBal").textContent = rub(S.balance);
+  if (S.goal) {
+    const p = Math.min(100, (S.balance / S.goal.total) * 100);
+    $("pGoal").textContent = "🎯 " + S.goal.title + " — " + rub(S.goal.total) + (S.plan ? ` · план ${rub(S.plan.perWeek)}/нед` : "");
+    $("pBar").style.width = p + "%";
+    $("pLeft").textContent = S.balance >= S.goal.total ? "🎉 Цель достигнута! Можно идти за билетом." : `Осталось ${rub(S.goal.total - S.balance)} · ${Math.round(p)}%`;
+  } else { $("pBar").style.width = "0"; $("pLeft").textContent = ""; }
+  $("pHist").innerHTML = S.hist.map((h) => `<li><span>${h.d} ${esc(h.n || "")}</span><span class="${h.v > 0 ? "plus" : "minus"}">${h.v > 0 ? "+" : ""}${rub(h.v)}</span></li>`).join("");
+}
+function money(sign) {
+  const v = num($("pSum").value, 1, 1e6);
+  if (v === null) { $("pErr").textContent = "Введи сумму целым числом от 1 до 1 000 000."; return; }
+  if (sign < 0 && v > S.balance) { $("pErr").textContent = `В копилке только ${rub(S.balance)}.`; return; }
+  $("pErr").textContent = "";
+  S.balance += sign * v;
+  S.hist.unshift({ d: new Date().toLocaleDateString("ru-RU"), v: sign * v, n: $("pNote").value.trim() });
+  S.hist = S.hist.slice(0, 30); saveS();
+  $("pSum").value = ""; $("pNote").value = ""; renderPiggy();
+  if (tgApp && tgApp.HapticFeedback) tgApp.HapticFeedback.notificationOccurred("success");
+}
+$("pAdd").onclick = () => money(1);
+$("pSub").onclick = () => money(-1);
+$("pReset").onclick = () => { if (confirm("Сбросить копилку и цель?")) { S = { balance: 0, goal: null, plan: null, hist: [], coins: S.coins, quizDone: S.quizDone }; saveS(); renderPiggy(); } };
+
+// ---- советы ----
+let tipI = 0;
+function renderTip() { const n = DATA.tips.length; tipI = (tipI + n) % n; $("tipText").innerHTML = DATA.tips[tipI]; $("tipNum").textContent = `Совет ${tipI + 1} из ${n}`; }
+$("tipNext").onclick = () => { tipI++; renderTip(); };
+$("tipPrev").onclick = () => { tipI--; renderTip(); };
+
+// ---- викторина ----
+function renderQuiz() {
+  const left = DATA.quiz.map((_, i) => i).filter((i) => !S.quizDone.includes(i));
+  if (!left.length) {
+    $("quizBox").innerHTML = `<div class="big">🏆 ${S.coins} 🪙</div><p>Ты ответил на все вопросы!</p><button class="btn" id="qAgain">🔄 Пройти заново</button>`;
+    $("qAgain").onclick = () => { S.quizDone = []; saveS(); renderQuiz(); };
+    return;
+  }
+  const qi = left[Math.floor(Math.random() * left.length)], q = DATA.quiz[qi];
+  $("quizBox").innerHTML = `<div class="meta">Курские монеты: ${S.coins} 🪙 · осталось вопросов: ${left.length}</div><h3>${esc(q.q)}</h3>` +
+    q.a.map((a, i) => `<button class="btn ghost" data-a="${i}">${esc(a)}</button>`).join("") + `<div id="qWhy"></div>`;
+  $("quizBox").querySelectorAll("[data-a]").forEach((b) => b.onclick = () => {
+    const ai = +b.dataset.a;
+    $("quizBox").querySelectorAll("[data-a]").forEach((x) => { x.disabled = true; x.classList.remove("ghost"); x.classList.add(+x.dataset.a === q.ok ? "right" : (x === b ? "wrong" : "ghost")); });
+    S.quizDone.push(qi); if (ai === q.ok) S.coins += 5; saveS();
+    $("qWhy").innerHTML = `<div class="result ${ai === q.ok ? "ok" : "warn"}">${ai === q.ok ? "✅ Верно! +5 🪙" : "❌ Не совсем."} ${esc(q.why)}</div><div class="row"><button class="btn" id="qNext">Следующий вопрос ▶︎</button></div>`;
+    $("qNext").onclick = renderQuiz;
+  });
+}
+
+// ---- льготы и видео ----
+function renderBenefits() {
+  $("benText").innerHTML = DATA.benefits.replace(/\n/g, "<br>");
+  $("vidList").innerHTML = DATA.videos.map((v) => `<div style="margin:6px 0"><a target="_blank" rel="noopener" href="${v.url}">▶️ ${esc(v.title)}</a></div>`).join("");
+}
+
+// ---- чат-бот ----
+let chatHist = store.get("chat", []);
+function addMsg(role, text) {
+  const d = document.createElement("div");
+  d.className = "msg " + (role === "user" ? "me" : "bot");
+  d.textContent = text; $("chatBox").appendChild(d);
+  d.scrollIntoView({ behavior: "smooth", block: "end" });
+  return d;
+}
+function localAnswer(q) {
+  const t = q.toLowerCase();
+  if (/афиш|куда сходить|событи/.test(t)) return "🎭 Загляни во вкладку «Афиша» — там театры, музеи и концерты Курска с ценой билета и дороги.";
+  if (/копилк|баланс/.test(t)) return `🐷 В копилке сейчас ${rub(S.balance)}. Пополнить можно во вкладке «Копилка».`;
+  if (/цел|сколько откладывать|посчита/.test(t)) return "🎯 Открой вкладку «Цель»: выбери событие, впиши, сколько есть и сколько откладываешь в неделю, — я посчитаю план.";
+  return null;
+}
+async function ask(q) {
+  q = q.trim(); if (!q) return;
+  addMsg("user", q); chatHist.push({ role: "user", content: q });
+  const local = localAnswer(q);
+  const wait = addMsg("bot", "⏳ Думаю…");
+  let answer;
+  try {
+    const r = await fetch(API, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ messages: chatHist.slice(-8) }) });
+    answer = (await r.json()).answer;
+  } catch { answer = local || "😔 Нет связи с ИИ. Попробуй позже или открой «Советы»."; }
+  if (local && answer && !answer.includes("вкладк")) answer = local + "\n\n" + answer;
+  wait.textContent = "🤖 " + answer;
+  chatHist.push({ role: "assistant", content: answer }); chatHist = chatHist.slice(-12); store.set("chat", chatHist);
+}
+$("chatForm").addEventListener("submit", (e) => { e.preventDefault(); const v = $("chatIn").value; $("chatIn").value = ""; ask(v); });
+$("chips").addEventListener("click", (e) => { const b = e.target.closest("[data-q]"); if (b) ask(b.dataset.q); });
+
+function greet() {
+  addMsg("bot", "👋 Привет! Я — Умный карман курского школьника.\n\nПомогу накопить на театр, музей или концерт Курского края: посчитаю план, буду вести копилку и подскажу, как не тратить лишнего.\n\nСпроси меня о чём-нибудь или выбери вкладку сверху 👆");
+  chatHist.forEach((m) => addMsg(m.role, (m.role === "assistant" ? "🤖 " : "") + m.content));
+}
+
+// ---- старт ----
+fetch("data/events.json", { cache: "no-cache" }).then((r) => r.json()).then((d) => {
+  DATA = d; renderAfisha(); renderTip(); renderBenefits(); renderPiggy();
+}).catch(() => { $("evList").innerHTML = '<div class="card">Не удалось загрузить афишу. Обнови страницу.</div>'; });
+greet();
+</script>
+</body>
+</html>
