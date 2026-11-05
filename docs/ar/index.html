@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Драмтеатр в AR</title>
+<meta name="description" content="3D-модель Курского драмтеатра им. А.С. Пушкина: вращайте и ставьте на стол в дополненной реальности.">
+<link rel="icon" href="../img/icon-192.png">
+<script type="module" src="https://unpkg.com/@google/model-viewer@3.5.0/dist/model-viewer.min.js"></script>
+<style>
+:root{--navy:#12285c;--blue:#245cb4;--gold:#f5b62e;--bg:#f3f5fb;--card:#fff;--text:#14213d;--muted:#5b6785}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d1630;--card:#16224a;--text:#eef2ff;--muted:#a8b3d6}}
+:root[data-theme="dark"]{--bg:#0d1630;--card:#16224a;--text:#eef2ff;--muted:#a8b3d6}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+header{background:linear-gradient(135deg,var(--blue),var(--navy));color:#fff;padding:20px 16px}
+header .in,main{max-width:860px;margin:0 auto}
+h1{margin:0;font-size:24px}h1 span{color:var(--gold)}header p{margin:6px 0 0;color:#d9e2f7;font-size:15px}
+main{padding:16px}
+model-viewer{width:100%;height:62vh;min-height:360px;background:radial-gradient(circle at 50% 40%,#ffffff,#dfe6f3);border-radius:18px}
+.arbtn{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);background:var(--gold);color:var(--navy);border:0;border-radius:999px;padding:12px 22px;font-weight:800;font-size:16px;box-shadow:0 6px 18px rgba(0,0,0,.2)}
+.card{background:var(--card);border-radius:16px;padding:16px;margin-top:14px;line-height:1.5}
+.card h2{margin:0 0 8px;font-size:19px}.muted{color:var(--muted);font-size:14px}
+a{color:var(--blue)}nav{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+nav a{background:var(--card);border-radius:999px;padding:8px 14px;text-decoration:none;font-weight:600}
+</style>
+</head>
+<body>
+<header><div class="in"><h1>Курский драмтеатр <span>в AR</span></h1><p>Покрутите модель пальцем или поставьте театр на стол через камеру телефона</p></div></header>
+<main>
+<model-viewer src="theatre.glb" alt="3D-модель Курского драматического театра им. А.С. Пушкина" ar ar-modes="webxr scene-viewer quick-look" ar-scale="auto" camera-controls touch-action="pan-y" auto-rotate auto-rotate-delay="800" rotation-per-second="18deg" camera-orbit="20deg 72deg 105%" shadow-intensity="1" exposure="1.05" environment-image="neutral">
+  <button slot="ar-button" class="arbtn">📱 Поставить на стол (AR)</button>
+</model-viewer>
+<div class="card">
+  <h2>🎭 Курский драматический театр им. А.С. Пушкина</h2>
+  Один из старейших театров России — основан в 1792 году. На курской сцене начинал великий актёр Михаил Щепкин. Перед театром — памятник А.С. Пушкину.
+  <p class="muted">Как смотреть: на компьютере — вращайте мышью и приближайте колесом. На телефоне — нажмите «Поставить на стол», наведите камеру на пол или стол, и театр появится в вашей комнате. Модель упрощённая, масштаб примерно 1:100.</p>
+</div>
+<nav><a href="../">🐷 Умный карман</a><a href="../art/">🎨 ИИ-галерея</a></nav>
+</main>
+</body>
+</html>
